@@ -4,6 +4,7 @@
   "name":"Tab Manager",
   "version":"0.0.1",
 
+  "icons": { "128": "icons/icon_128.png" },
 
   "permissions":[
     "tabs",
@@ -12,13 +13,12 @@
 
   "browser_action":{
     "default_title":"Manage Tabs",
-    "default_icon":"48x48.png",
+    "default_icon":"icons/icon_48x48.png",
     "default_popup":"popup.html"
   },
 
   "background": {
     "scripts": ["js/SessionsHolder.js","js/Session.js","js/SimpleTab.js","jquery.js","startup.js"]
   }
-
 
 }

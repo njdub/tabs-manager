@@ -39,7 +39,7 @@ $(document).ready(function () {
 chrome.storage.local.get(sessionsStorageKey, function (items) {
     chrome.storage.local.get(activeSessionKey, function (result) {
         items[sessionsStorageKey]._sessions.forEach(function (session) {
-            sessionsView.append('<li ' + (session.name === result[activeSessionKey] ? 'class="active"' : '') + ' ><a href="#">' + session.name + '<span style="margin-left:75%"><button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></span></a></li>');
+            renderSession(session, result[activeSessionKey]);
         });
     });
 });
@@ -137,7 +137,7 @@ function saveStateToNewSession(name) {
             sessionHolder.addSession(session);
             chrome.storage.local.set({'userSessions': sessionHolder}, function () {
                 //TODO Operation Successful
-                sessionsView.append('<li><a href="#">' + session.name + '</a></li>');
+                renderSession(session);
                 $("#new_session_name").val('');
             });
         });
@@ -150,4 +150,15 @@ function closeBrowser() {
             chrome.windows.remove(window.id);    //close all windows to quit from browser
         });
     });
+}
+
+function renderSession(session, activeSessionName) {
+    sessionsView.append(
+        '<li ' + (session.name === activeSessionName ? 'class="active"' : '') + ' >' +
+        '<a href="#"><span style="margin-right:5%">' +
+        '<button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>' +
+        '</button>' +
+        '</span>' + session.name +
+        '</a>' +
+        '</li>');
 }
