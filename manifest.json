@@ -1,0 +1,24 @@
+{
+  "manifest_version":2,
+
+  "name":"Tab Manager",
+  "version":"0.0.1",
+
+
+  "permissions":[
+    "tabs",
+    "storage"
+  ],
+
+  "browser_action":{
+    "default_title":"Manage Tabs",
+    "default_icon":"48x48.png",
+    "default_popup":"popup.html"
+  },
+
+  "background": {
+    "scripts": ["js/SessionsHolder.js","js/Session.js","js/SimpleTab.js","jquery.js","startup.js"]
+  }
+
+
+}
