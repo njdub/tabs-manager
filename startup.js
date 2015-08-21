@@ -3,7 +3,6 @@
 // init session holder;
 
 chrome.storage.local.get('userSessions', function (items) {
-    //alert(Object.keys(items).length === 0);
     if (Object.keys(items).length === 0) {
         var sessionHolder = new SessionsHolder();
         chrome.storage.local.set({'userSessions': sessionHolder}, function () {
@@ -11,6 +10,8 @@ chrome.storage.local.get('userSessions', function (items) {
         });
     }
 });
+
+// init active session
 
 chrome.storage.local.get('activeSessionName', function (items) {
     if (Object.keys(items).length === 0) {
@@ -21,21 +22,13 @@ chrome.storage.local.get('activeSessionName', function (items) {
     }
 });
 
+// init extension setting
 
-
-
-//getSessions();
-
-//chrome.windows.onRemoved.addListener(function (windowId) {
-//    alert("!! Exiting the Browser !!");
-//});
-//
-function getSessions() {
-    chrome.storage.local.get('userSessions', function (items) {
-        var sessions = $('sessions');
-        alert(JSON.stringify(items));
-        //items['userSessions']._sessions.forEach(function (session) {
-        //   alert(session.name);
-        //});
-    });
-}
+chrome.storage.local.get('setting', function (result) {
+    if (Object.keys(result).length === 0) {
+        var defaultSetting = new ExtensionSetting();
+        chrome.storage.local.set({'setting': defaultSetting}, function () {
+            //TODO MSG:Custom setting not found, using default setting
+        });
+    }
+});

@@ -1,8 +1,24 @@
 var sessionsStorageKey = 'userSessions';
 var activeSessionKey = 'activeSessionName';
 var sessionsView = $('#sessions');
+var setting = null;
 
-$(document).ready(function () {
+
+initSetting(bindEvents);
+
+displaySessions();
+
+function displaySessions() {
+    chrome.storage.local.get(sessionsStorageKey, function (items) {
+        chrome.storage.local.get(activeSessionKey, function (result) {
+            items[sessionsStorageKey]._sessions.forEach(function (session) {
+                renderSession(session, result[activeSessionKey]);
+            });
+        });
+    });
+}
+
+function bindEvents() {
     $("#btn_new_session").click(function (e) {
         e.preventDefault();
         var sessionName = $("#new_session_name").val();
@@ -31,18 +47,14 @@ $(document).ready(function () {
         if ($(e.target).closest('span').is('span')) {   //remove session if on remove button click
             removeSession(e);
         } else {
-            activateSession(e);
+            if (setting.autoSave) {
+                saveStateToActiveSession(activateSession, e);
+            } else {
+                activateSession(e);
+            }
         }
     });
-});
-
-chrome.storage.local.get(sessionsStorageKey, function (items) {
-    chrome.storage.local.get(activeSessionKey, function (result) {
-        items[sessionsStorageKey]._sessions.forEach(function (session) {
-            renderSession(session, result[activeSessionKey]);
-        });
-    });
-});
+}
 
 function activateSession(e) {
     var sessionName = $(e.target).closest('li').text();
@@ -97,7 +109,7 @@ function removeSession(e) {
     });
 }
 
-function saveStateToActiveSession(callback) {
+function saveStateToActiveSession(callback, arg) {
     chrome.storage.local.get(activeSessionKey, function (active) {
         chrome.storage.local.get('userSessions', function (result) {
             var sessionHolder = result['userSessions'];
@@ -113,7 +125,7 @@ function saveStateToActiveSession(callback) {
                         //sessionHolder.addSession(session);
                         chrome.storage.local.set({'userSessions': sessionHolder}, function () {
                             //TODO Operation Successful
-                            callback && callback();
+                            callback && callback(arg);
                         });
                     });
                 }
@@ -161,4 +173,11 @@ function renderSession(session, activeSessionName) {
         '</span>' + session.name +
         '</a>' +
         '</li>');
+}
+
+function initSetting(callback) {
+    chrome.storage.local.get('setting', function (result) {
+        setting = result['setting'];
+        callback();
+    });
 }

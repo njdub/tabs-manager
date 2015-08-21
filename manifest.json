@@ -4,7 +4,7 @@
   "name":"Tab Manager",
   "version":"0.0.1",
 
-  "icons": { "128": "icons/icon_128.png" },
+  "icons": { "128": "icons/icon_128x128.png" },
 
   "permissions":[
     "tabs",
@@ -18,7 +18,9 @@
   },
 
   "background": {
-    "scripts": ["js/SessionsHolder.js","js/Session.js","js/SimpleTab.js","jquery.js","startup.js"]
-  }
+    "scripts": ["js/ExtensionSetting.js","js/SessionsHolder.js","js/Session.js","js/SimpleTab.js","jquery.js","startup.js"]
+  },
+
+  "options_page": "options.html"
 
 }
