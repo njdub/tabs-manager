@@ -16,7 +16,7 @@ body {
 }
 
 button.session-name {
-    width: 95%;
+    width: 93%;                                                         /*!!!!!*/
     text-align: left;
 }
 
@@ -81,8 +81,9 @@ button.session-name {
 .btn-group-vertical > .btn:active,
 .session-view > .btn.active,
 .btn-group-vertical > .btn.active {
-z-index: 2;
+    z-index: 2;
 }
+
 .session-view .btn + .btn,
 .session-view .btn + .session-view,
 .session-view .session-view + .btn,
@@ -267,7 +268,7 @@ z-index: 2;
 }
 
 button.session-context {
-    width: 5%;
+    width: 7%;
     text-align: left;
 }
 
@@ -281,6 +282,7 @@ button.session-context {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
+
 .session-context:last-child {
     margin-bottom: 0;
     border-bottom-right-radius: 4px;
@@ -291,6 +293,7 @@ a.session-context,
 button.session-context {
     color: #555;
 }
+
 .session-context.disabled,
 .session-context.disabled:hover,
 .session-context.disabled:focus {
@@ -307,6 +310,7 @@ button.session-context {
     background-color: #337ab7;
     border-color: #337ab7;
 }
+
 /******************************************************************/
 /******************************************************************/
 

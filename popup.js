@@ -44,20 +44,22 @@ function bindEvents() {
     });
 
     sessionsView.click(function (e) {
-        if ($(e.target).closest('span').is('span')) {   //remove session if on remove button click
-            removeSession(e);
-        } else {
-            if (setting.autoSave) {
-                saveStateToActiveSession(activateSession, e);
-            } else {
-                activateSession(e);
-            }
-        }
+        var sessionName = $(e.target).text();
+        activateSession(sessionName);         //ToDO:
+
+        //if ($(e.target).closest('span').is('span')) {   //remove session if on remove button click
+        //    removeSession(e);
+        //} else {
+        //    if (setting.autoSave) {
+        //        saveStateToActiveSession(activateSession, e);
+        //    } else {
+        //        activateSession(e);
+        //    }
+        //}
     });
 }
 
-function activateSession(e) {
-    var sessionName = $(e.target).closest('li').text();
+function activateSession(sessionName) {
     chrome.storage.local.set({activeSessionName: sessionName}, function () {
     });
     chrome.storage.local.get(sessionsStorageKey, function (items) {
@@ -165,14 +167,25 @@ function closeBrowser() {
 }
 
 function renderSession(session, activeSessionName) {
-    sessionsView.append(
-        '<li ' + (session.name === activeSessionName ? 'class="active"' : '') + ' >' +
-        '<a href="#"><span style="margin-right:5%">' +
-        '<button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>' +
-        '</button>' +
-        '</span>' + session.name +
-        '</a>' +
-        '</li>');
+    //sessionsView.append(
+    //    '<li ' + (session.name === activeSessionName ? 'class="active"' : '') + ' >' +
+    //    '<a href="#"><span style="margin-right:5%">' +
+    //    '<button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>' +
+    //    '</button>' +
+    //    '</span>' + session.name +
+    //    '</a>' +
+    //    '</li>');
+    sessionsView.append('<div class="session-view">' +
+        '<button type="button" class="btn session-name' + (session.name === activeSessionName ? ' active ' : '') + '">' + session.name + '</button>' +
+        '<button type="button" class="btn dropdown-toggle session-context" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>' +
+        '<ul class="session-menu">' +
+        '<li><a href="#">Activate</a></li>' +
+        '<li><a href="#">Save & Activate</a></li>' +
+        '<li class="divider"></li>' +
+        '<li><a href="#">Rename</a></li>' +
+        '<li><a href="#">Remove</a></li></ul>' +
+        '</div>');
+
 }
 
 function initSetting(callback) {
