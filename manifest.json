@@ -14,13 +14,13 @@
   "browser_action":{
     "default_title":"Manage Tabs",
     "default_icon":"icons/icon_48x48.png",
-    "default_popup":"popup.html"
+    "default_popup":"popup/popup.html"
   },
 
   "background": {
-    "scripts": ["js/ExtensionSetting.js","js/SessionsHolder.js","js/Session.js","js/SimpleTab.js","jquery.js","startup.js"]
+    "scripts": ["common/ExtensionSetting.js","common/SessionsHolder.js","common/Session.js","common/SimpleTab.js","external/jquery.js","startup.js"]
   },
 
-  "options_page": "options.html"
+  "options_page": "option/option.html"
 
 }

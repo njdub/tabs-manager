@@ -197,7 +197,7 @@ function renderSession(session, activeSessionName) {
         '<li><a href="#">Activate</a></li>' +
         '<li><a href="#">Save & Activate</a></li>' +
         '<li class="divider"></li>' +
-        '<li><a href="#">Rename</a></li>' +
+        '<li class="disabled"><a href="#">Rename</a></li>' +
         '<li><a href="#">Remove</a></li></ul>' +
         '</div>');
 
