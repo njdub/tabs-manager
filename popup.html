@@ -10,21 +10,25 @@
 
 </head>
 <body>
-<form class="navbar-form" role="search">
-    <button type="submit" class="btn btn-danger" id="btn_quit">Exit</button>
-    <button type="submit" class="btn btn-primary" id="btn_save_session">Save</button>
-    <button type="submit" class="btn btn-success" id="btn_save_quit">Save & Exit</button>
-</form>
-<form class="navbar-form">
-    <div class="input-group">
-        <input type="text" id="new_session_name"  class="form-control" placeholder="Session Name">
+<div class="container-fluid">
+    <form class="navbar-form pull-right" role="search">
+        <button type="submit" class="btn btn-primary" id="btn_save_session">Save</button>
+        <button type="submit" class="btn btn-danger" id="btn_quit">Exit</button>
+        <button type="submit" class="btn btn-success" id="btn_save_quit">Save & Exit</button>
+    </form>
+</div>
+<div class="container-fluid">
+    <form class="navbar-form">
+        <div class="input-group">
+            <input type="text" id="new_session_name" class="form-control" placeholder="Session Name">
               <span class="input-group-btn">
         <button class="btn btn-success" type="button" id="btn_new_session">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
       </span>
-    </div>
-</form>
+        </div>
+    </form>
+</div>
 
 <div class="container-fluid">
     <div class="list-group" id="sessions"></div>

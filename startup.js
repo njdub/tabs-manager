@@ -15,6 +15,7 @@ chrome.storage.local.get('userSessions', function (items) {
 
 chrome.storage.local.get('activeSessionName', function (items) {
     if (Object.keys(items).length === 0) {
+        alert("no AS");
         //TODO: Think about default active session and start tab
         //chrome.storage.local.set({'userSessions': sessionHolder}, function () {
         //    //TODO Operation Successful

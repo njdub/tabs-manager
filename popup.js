@@ -4,16 +4,15 @@ var sessionsView = $('#sessions');
 var setting = null;
 
 
-initSetting(bindEvents);
+initSetting(showPopup);
 
-displaySessions();
-
-function displaySessions() {
+function showPopup() {
     chrome.storage.local.get(sessionsStorageKey, function (items) {
         chrome.storage.local.get(activeSessionKey, function (result) {
             items[sessionsStorageKey]._sessions.forEach(function (session) {
                 renderSession(session, result[activeSessionKey]);
             });
+            bindEvents();
         });
     });
 }
@@ -43,19 +42,41 @@ function bindEvents() {
         closeBrowser();
     });
 
-    sessionsView.click(function (e) {
-        var sessionName = $(e.target).text();
-        activateSession(sessionName);         //ToDO:
+    sessionBindEvents();
+}
 
-        //if ($(e.target).closest('span').is('span')) {   //remove session if on remove button click
-        //    removeSession(e);
-        //} else {
-        //    if (setting.autoSave) {
-        //        saveStateToActiveSession(activateSession, e);
-        //    } else {
-        //        activateSession(e);
-        //    }
-        //}
+function sessionBindEvents() {
+    sessionsView.find(".session-menu li :contains(Remove)").each(function (index, elem) {
+        $(elem).click(function (e) {
+            var sessionView = $(e.target).closest('div');
+            var sessionName = sessionView.find('button:eq(0)').first().text();
+            removeSession(sessionName, sessionView)
+        })
+    });
+
+    sessionsView.find(".session-menu li :contains(Activate):not(:contains(Save & Activate))").each(function (index, elem) {
+        $(elem).click(function (e) {
+            var sessionName = $(e.target).closest('div').find('button:eq(0)').first().text();
+            activateSession(sessionName);
+        })
+    });
+
+    sessionsView.find(".session-menu li :contains(Save & Activate)").each(function (index, elem) {
+        $(elem).click(function (e) {
+            var sessionName = $(e.target).closest('div').find('button:eq(0)').first().text();
+            saveStateToActiveSession(activateSession, sessionName);
+        })
+    });
+
+    sessionsView.find(".session-name").each(function (index, elem) {
+        $(elem).click(function (e) {
+            var sessionName = $(e.target).text();
+            if (setting.autoSave) {
+                saveStateToActiveSession(activateSession, sessionName);
+            } else {
+                activateSession(sessionName);
+            }
+        })
     });
 }
 
@@ -90,8 +111,7 @@ function activateSession(sessionName) {
     });
 }
 
-function removeSession(e) {
-    var sessionName = $(e.target).closest('li').text();
+function removeSession(sessionName, sessionView) {
     chrome.storage.local.get(sessionsStorageKey, function (result) {
         for (var i = 0; i < result['userSessions']._sessions.length; i++) {
             if (result['userSessions']._sessions[i].name === sessionName) {
@@ -100,22 +120,27 @@ function removeSession(e) {
             }
         }
         chrome.storage.local.set({'userSessions': result['userSessions']}, function () {
-            $(e.target).closest('li').remove();
-        });
-        chrome.storage.local.get(activeSessionKey, function (result) {
-            if (result[activeSessionKey] === sessionName) {
-                chrome.storage.local.set({activeSessionName: ''}, function () {
-                });
-            }
+            sessionView.remove();
+            chrome.storage.local.get(activeSessionKey, function (result) {
+                if (result[activeSessionKey] === sessionName) {
+                    chrome.storage.local.set({activeSessionName: ''}, function () {
+                    });
+                }
+            });
         });
     });
 }
 
+/**
+ * Do nothing if can't find active session in sessionHolder
+ *
+ * @param callback
+ * @param arg arguments for callback
+ */
 function saveStateToActiveSession(callback, arg) {
     chrome.storage.local.get(activeSessionKey, function (active) {
         chrome.storage.local.get('userSessions', function (result) {
             var sessionHolder = result['userSessions'];
-            //restoreHolder(sessionHolder);
             sessionHolder._sessions.forEach(function (session) {
                 if (session.name === active[activeSessionKey]) {
                     session._tabs = [];
@@ -124,7 +149,6 @@ function saveStateToActiveSession(callback, arg) {
                             var simpleTab = new SimpleTab(tab.url, tab.title);
                             session._tabs.push(simpleTab);
                         });
-                        //sessionHolder.addSession(session);
                         chrome.storage.local.set({'userSessions': sessionHolder}, function () {
                             //TODO Operation Successful
                             callback && callback(arg);
@@ -132,8 +156,6 @@ function saveStateToActiveSession(callback, arg) {
                     });
                 }
             });
-
-
         });
     });
 }
@@ -152,6 +174,7 @@ function saveStateToNewSession(name) {
             chrome.storage.local.set({'userSessions': sessionHolder}, function () {
                 //TODO Operation Successful
                 renderSession(session);
+                sessionBindEvents();        //TODO: bind events only to new session
                 $("#new_session_name").val('');
             });
         });
@@ -167,17 +190,9 @@ function closeBrowser() {
 }
 
 function renderSession(session, activeSessionName) {
-    //sessionsView.append(
-    //    '<li ' + (session.name === activeSessionName ? 'class="active"' : '') + ' >' +
-    //    '<a href="#"><span style="margin-right:5%">' +
-    //    '<button class="btn btn-danger" type="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>' +
-    //    '</button>' +
-    //    '</span>' + session.name +
-    //    '</a>' +
-    //    '</li>');
     sessionsView.append('<div class="session-view">' +
         '<button type="button" class="btn session-name' + (session.name === activeSessionName ? ' active ' : '') + '">' + session.name + '</button>' +
-        '<button type="button" class="btn dropdown-toggle session-context" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>' +
+        '<button type="button" class="btn dropdown-toggle session-context' + (session.name === activeSessionName ? ' active ' : '') + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span><span class="sr-only">Toggle Dropdown</span></button>' +
         '<ul class="session-menu">' +
         '<li><a href="#">Activate</a></li>' +
         '<li><a href="#">Save & Activate</a></li>' +
@@ -191,6 +206,6 @@ function renderSession(session, activeSessionName) {
 function initSetting(callback) {
     chrome.storage.local.get('setting', function (result) {
         setting = result['setting'];
-        callback();
+        callback && callback();
     });
 }
